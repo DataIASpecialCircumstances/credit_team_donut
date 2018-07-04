@@ -1,5 +1,5 @@
 install_library <- function()
-  #########################################################################
+#########################################################################
 #####                 Importation Package                           #####
 #install.packages('Hmisc')
 #install.packages('ggplot2')
@@ -8,10 +8,10 @@ install_library <- function()
 library("dplyr")
 library('maptools')
 library("questionr")
-#### test
+
 
 telechargement_data <- function()
-  #########################################################################
+#########################################################################
 #####                 Téléchargement donnée                        #####
 column_name = c("Comptes", "Duree_credit", "Historique_credit", "Objet_credit", "Montant_credit", "Epargne", "Anciennete_emploi", "taux_effort", "Situation_familiale", "Garanties", "Anciennete_domicile", "Biens", "Age", "Autres_credits", "Statut_domicile", "Nb_credits", "Type_emploi", "Nb_pers_charge", "Telephone", "Etranger", "Cible")
 
@@ -23,7 +23,7 @@ class(credit) #data frame
 #csv <- read.csv('chemain/nom_fichier.csv', sep=',')
 
 pretraitement <- function()
-  ########################################################################
+########################################################################
 #####                 Prétraitement des données                    #####
 # Q : Observer une premiere fois les données
 head(credit)
@@ -48,14 +48,14 @@ plot(credit$Etranger, credit$Cible)
 plot(credit$Garanties, credit$Cible)
 
 split_data <- function()   
-  ########################################################################
+########################################################################
 #####              Split des données Train/Test                    #####
 
 
 
 
 mes_models <- function()
-  ########################################################################
+########################################################################
 #####                    Entrainement (model)                      #####
 #Regression logistique sur var cible
 
