@@ -19,12 +19,14 @@ column_name = c("Comptes", "Duree_credit", "Historique_credit", "Objet_credit", 
 credit <- read.table('data/credit.txt', sep=' ', col.names = column_name )
 class(credit) #data frame
 
+table(credit$Cible) # il y a plus de validation que de refus d'accorder un credit
+
 # Q : Importer le fichier au format csv dans une variable ?
 #csv <- read.csv('chemain/nom_fichier.csv', sep=',')
 
-pretraitement <- function()
+Visualisation <- function()
 ########################################################################
-#####                 Prétraitement des données                    #####
+#####                 Visualisation des données                    #####
 # Q : Observer une premiere fois les données
 head(credit)
 
@@ -34,6 +36,14 @@ describe(credit)
 
 # Cliquer sur Tools > Addins > numeric... >
 #my_structure <- str(credit)
+
+hist(credit$Age) 
+plot(credit$Etranger, credit$Cible)
+plot(credit$Garanties, credit$Cible)
+
+pretraitement <- function()
+########################################################################
+#####                 Prétraitement des données                    #####
 #dplyr::select_if(credit, is.numeric)
 nom_col_bin <- c('Nb_pers_charge', 'Téléphone', "Etranger", "Cible")
 
@@ -43,21 +53,40 @@ nom_col_nominal <- c("Historique_credit", "Objet_credit", "Situation_familiale",
 
 nom_col_categoriel <- c("Comptes", "Epargne", "Anciennete_emploi", "Anciennete_domicile", "taux_effort")
 
-hist(credit$Age) 
-plot(credit$Etranger, credit$Cible)
-plot(credit$Garanties, credit$Cible)
 
 split_data <- function()   
 ########################################################################
 #####              Split des données Train/Test                    #####
 
-
-
+data <- sample(2, nrow(credit), replace=TRUE, prob = c(0.70,0.30))
+train_data <- credit[data == 1,]
+nrow(train)
+test_data <- credit[data == 2,]
 
 mes_models <- function()
 ########################################################################
 #####                    Entrainement (model)                      #####
-#Regression logistique sur var cible
+library(class)
+# Classification with Nearest Neighbors
+modelKNN <- knn(train_data, test_data, train_labels)
+
+# Classification with Gaussian Naive Bayes
+modelNB <- naiveBayes( Cible ~ ., data = train_data)
+
+# Classification with LinearSVC
+# https://stackoverflow.com/questions/36341381/how-to-plot-svm-classification-hyperplane
+
+# Classification with DecisionTreeClassifier
 
 
-print("Fin")
+# Classification with linear_model
+
+
+Prediction <- function()
+########################################################################
+#####                         Prediction                           #####
+predictKNN <- predict(modelKNN, test_data)
+mmetric(test_data$Cible, predictKNN, c("ACCURACY", "PRECISION", "TPR", "F1"))
+
+predictNB <- predict(modelNB, test_data)
+mmetric(test_data$Cible, predictNB, c("ACCURACY", "PRECISION", "TPR", "F1")) 
