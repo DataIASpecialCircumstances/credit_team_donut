@@ -5,6 +5,9 @@ install_library <- function()
 #install.packages('ggplot2')
 #install.packages('questionr')
 #install.packages('maptools')
+#install.packages("dummies")
+#install.packages("ade4")
+library("ade4")
 library("dplyr")
 library('maptools')
 library("questionr")
@@ -49,9 +52,17 @@ nom_col_bin <- c('Nb_pers_charge', 'Téléphone', "Etranger", "Cible")
 
 nom_col_numerique <- c('Duree_credit', 'Montant_credit', "Age", "Nb_credits")
 
+#cols <- colnames(credit)[which(sapply(credit, function(x) is.factor(x) & !is.ordered(x)))]
 nom_col_nominal <- c("Historique_credit", "Objet_credit", "Situation_familiale", "Garanties", "Biens", "Autres_credits", "Statut_domicile", "Type_emploi")
 
 nom_col_categoriel <- c("Comptes", "Epargne", "Anciennete_emploi", "Anciennete_domicile", "taux_effort")
+
+
+#### One hot encoding
+
+ad <- acm.disjonctif(subset(credit, select=nom_col_nominal))
+credit <- cbind(credit, ad) #add new col to credit
+credit[nom_col_nominal] <- NULL #delet col nom in credit
 
 
 split_data <- function()   
@@ -60,12 +71,16 @@ split_data <- function()
 
 data <- sample(2, nrow(credit), replace=TRUE, prob = c(0.70,0.30))
 train_data <- credit[data == 1,]
-nrow(train)
+nrow(train_data)
 test_data <- credit[data == 2,]
+
 
 mes_models <- function()
 ########################################################################
 #####                    Entrainement (model)                      #####
+#regression logisitique
+glm(formula = Cible~., data = train_data)
+
 library(class)
 # Classification with Nearest Neighbors
 modelKNN <- knn(train_data, test_data, train_labels)
